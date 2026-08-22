@@ -1,0 +1,30 @@
+{
+  "name": "@cro-engine/assignment-engine",
+  "version": "0.1.0",
+  "description": "Deterministic bucketing, targeting, and assignment for server-side A/B experiments. Pure, dependency-free, runs identically in Node.js, browsers, and edge runtimes.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  },
+  "license": "MIT"
+}
