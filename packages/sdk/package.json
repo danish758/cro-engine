@@ -1,0 +1,33 @@
+{
+  "name": "@cro-engine/sdk",
+  "version": "0.1.0",
+  "description": "Client SDK for the CRO Engine platform. Fetches experiment config from a project's API and evaluates bucketing locally via @cro-engine/assignment-engine — no per-request network call to the platform on the common path.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@cro-engine/assignment-engine": "^0.1.0"
+  },
+  "devDependencies": {
+    "tsup": "^8.3.5",
+    "typescript": "^5.6.3",
+    "vitest": "^2.1.4"
+  },
+  "license": "MIT"
+}

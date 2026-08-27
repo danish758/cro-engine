@@ -114,4 +114,18 @@ describe('minimumSampleSize', () => {
     expect(Number.isInteger(n)).toBe(true);
     expect(n).toBeGreaterThan(0);
   });
+
+  it('never returns a negative or NaN result when baseline + MDE would push the shifted rate above 100%', () => {
+    // baseline 100%, MDE 100% -> naive p2 = 1 * (1 + 1) = 2, an invalid
+    // probability. This exact shape appeared live in the platform dashboard
+    // (a single-visitor experiment with a 100% baseline rate).
+    const n = minimumSampleSize(1, 1);
+    expect(Number.isNaN(n)).toBe(false);
+    expect(n).toBeGreaterThan(0);
+  });
+
+  it('returns Infinity when the baseline is already at the ceiling with no detectable gap', () => {
+    const n = minimumSampleSize(1, 1);
+    expect(n).toBe(Infinity);
+  });
 });

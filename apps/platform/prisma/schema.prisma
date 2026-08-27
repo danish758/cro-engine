@@ -1,0 +1,112 @@
+// Postgres, multi-tenant. Every experiment-data table carries a projectId —
+// that's the tenant boundary. Uniqueness that used to be global in v1
+// (single-tenant) is now scoped per-project (e.g. Experiment.key is unique
+// WITHIN a project, not across the whole platform).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Account {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String
+  createdAt    DateTime  @default(now())
+  projects     Project[]
+  sessions     Session[]
+}
+
+// Opaque, DB-backed session — the cookie holds only this row's id. Chosen
+// over a stateless signed token specifically so logout/revocation is real
+// (delete the row) rather than "valid until it happens to expire."
+model Session {
+  id        String   @id @default(cuid())
+  accountId String
+  account   Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([accountId])
+}
+
+model Project {
+  id          String       @id @default(cuid())
+  name        String
+  accountId   String
+  account     Account      @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  apiKeys     ApiKey[]
+  experiments Experiment[]
+  createdAt   DateTime     @default(now())
+
+  @@index([accountId])
+}
+
+// The raw key is shown to the user exactly once, at creation — only its
+// sha256 hash is ever persisted, same as how GitHub/Stripe handle API keys.
+model ApiKey {
+  id        String    @id @default(cuid())
+  projectId String
+  project   Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  hashedKey String    @unique
+  label     String?
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  @@index([projectId])
+}
+
+model Experiment {
+  id              String   @id @default(cuid())
+  projectId       String
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  key             String
+  name            String
+  description     String?
+  status          String
+  variantsJson    String
+  targetingJson   String?
+  seed            Int?
+  // The conversion event name this experiment is measured against (what the
+  // SDK's trackConversion(eventName) calls should match for this
+  // experiment's dashboard). Optional — with experiments now created
+  // dynamically per project (unlike v1's two hardcoded demo experiments),
+  // there's no way to infer this automatically, so it's set explicitly in
+  // the wizard's Basics step. Null means the dashboard shows visitor counts
+  // only, no significance test.
+  conversionEvent String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([projectId, key])
+}
+
+// One row per (projectId, userId, experimentKey) — the same dedup guarantee
+// v1 had, just re-scoped so two different projects' users never collide.
+model Exposure {
+  id            String   @id @default(cuid())
+  projectId     String
+  userId        String
+  experimentKey String
+  variantKey    String
+  createdAt     DateTime @default(now())
+
+  @@unique([projectId, userId, experimentKey])
+  @@index([projectId, experimentKey])
+}
+
+model Conversion {
+  id        String   @id @default(cuid())
+  projectId String
+  userId    String
+  eventName String
+  value     Float?
+  createdAt DateTime @default(now())
+
+  @@index([projectId, eventName])
+  @@index([projectId, userId])
+}

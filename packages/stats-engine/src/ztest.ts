@@ -122,7 +122,21 @@ export function minimumSampleSize(
 ): number {
   const significance = 0.05;
   const p1 = baselineRate;
-  const p2 = baselineRate * (1 + minimumDetectableEffect);
+  // p2 = p1 shifted by the relative MDE, clamped to [0, 1] — it's a
+  // probability, and without clamping a high baseline rate combined with a
+  // large MDE (e.g. p1=1.0, mde=1.0 → p2=2.0) produces p2*(1-p2) < 0, which
+  // corrupts the variance term and can surface as a nonsensical *negative*
+  // sample size. This is a real edge case, not just theoretical — it shows
+  // up whenever a baseline is near 100% and the observed lift is large
+  // (exactly the shape of "not much data yet" experiments this function is
+  // most often called for).
+  const p2 = Math.min(1, Math.max(0, baselineRate * (1 + minimumDetectableEffect)));
+
+  // No detectable gap to measure (e.g. baseline is already 100% and the
+  // clamp above pins p2 to the same value) — no finite sample size can
+  // detect a zero-width effect, so this is Infinity, not a division by
+  // zero producing NaN.
+  if (p2 === p1) return Infinity;
 
   const zAlpha = inverseNormalCdf(1 - significance / 2);
   const zBeta = inverseNormalCdf(power);

@@ -1,0 +1,20 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: cro
+      POSTGRES_PASSWORD: cro
+      POSTGRES_DB: cro_engine
+    ports:
+      - '55432:5432'
+    volumes:
+      - cro_engine_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U cro -d cro_engine']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  cro_engine_postgres_data:
