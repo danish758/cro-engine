@@ -2,16 +2,14 @@
   "name": "cro-engine",
   "private": true,
   "version": "0.1.0",
-  "description": "Server-side experimentation platform - assignment engine, stats engine, a client SDK, and a multi-tenant Next.js control plane",
+  "description": "The engine behind CRO Engine: deterministic bucketing/targeting (assignment-engine), frequentist significance testing (stats-engine), and the client SDK (sdk) that consuming apps install to run experiments against a CRO Engine platform deployment.",
   "workspaces": [
-    "packages/*",
-    "apps/*"
+    "packages/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace=packages/assignment-engine --workspace=packages/stats-engine --workspace=packages/sdk",
-    "test": "npm run test --workspace=packages/assignment-engine --workspace=packages/stats-engine --workspace=packages/sdk",
-    "test:watch": "vitest",
-    "dev": "npm run dev --workspace=apps/platform"
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "test:watch": "vitest"
   },
   "devDependencies": {
     "typescript": "^5.6.3",
