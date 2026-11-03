@@ -2,13 +2,14 @@
   "name": "cro-engine",
   "private": true,
   "version": "0.1.0",
-  "description": "The engine behind CRO Engine: deterministic bucketing/targeting (assignment-engine), frequentist significance testing (stats-engine), and the client SDK (sdk) that consuming apps install to run experiments against a CRO Engine platform deployment.",
+  "description": "CRO Engine: the engine packages (assignment-engine, stats-engine, sdk) and the platform API that serves experiment config to them.",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
     "test:watch": "vitest"
   },
   "devDependencies": {

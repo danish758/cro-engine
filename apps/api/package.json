@@ -1,0 +1,9 @@
+{
+  "name": "@cro-engine/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "CRO Engine platform API (Express): accounts, projects, experiments, and the config endpoint the SDK calls.",
+  "dependencies": {
+    "@cro-engine/assignment-engine": "*"
+  }
+}
