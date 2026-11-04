@@ -25,5 +25,5 @@ REVOKE UPDATE, DELETE ON audit_logs FROM app_user;
 - REVOKE doesn't limit the owner, so the app must connect as a different user
 - Least privilege: if the app is ever compromised (for example, SQL injection), the attacker can't drop tables or rewrite the audit history
 
-## To verify
-Deleting a project as the app user still removes its audit logs (cascades should run with the table owner's permissions), while a direct DELETE on audit_logs fails.
+## Verified
+Tested in psql as app_user: UPDATE and DELETE on audit_logs fail with "permission denied", while deleting a project succeeds and its audit logs are removed by the cascade.

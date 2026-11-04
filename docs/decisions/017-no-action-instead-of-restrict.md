@@ -14,5 +14,5 @@ NO ACTION checks at the end of the statement. A direct environment or folder del
 
 Archived experiments also block deleting an environment. Environments are long-lived, so database protection is worth more than being able to delete one. For folders, app code moves archived experiments to the default folder before deleting.
 
-## To verify
-In psql: deleting an environment with an experiment fails; deleting its project succeeds.
+## Verified
+Tested in psql: deleting an environment with an experiment fails; deleting its project succeeds and removes the experiment.

@@ -244,7 +244,7 @@ A trigger was rejected because it would also block the cascade when a project is
 
 ## To verify in psql
 
-Behaviors this design depends on, to test when the schema is first run:
+Behaviors this design depends on. All five were tested in psql and behave as described:
 
 1. An experiment pointing at another project's folder or environment is rejected (composite foreign keys, 016)
 2. Deleting an environment that has experiments fails; deleting its project succeeds (NO ACTION, 017)
