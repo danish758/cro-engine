@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "node --watch --env-file=.env src/index.ts",
     "start": "node --env-file=.env src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "migrate": "node --env-file=.env src/migrate.ts"
   },
   "description": "CRO Engine platform API (Express): accounts, projects, experiments, and the config endpoint the SDK calls.",
   "dependencies": {
