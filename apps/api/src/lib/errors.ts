@@ -6,11 +6,13 @@ import { HttpStatus } from './http-status.ts';
 export class AppError extends Error {
   readonly status: number;
   readonly code: string;
+  readonly details: unknown;
 
-  constructor(status: number, code: string, message: string) {
+  constructor(status: number, code: string, message: string, details?: unknown) {
     super(message);
     this.status = status;
     this.code = code;
+    this.details = details;
   }
 }
 
@@ -25,9 +27,11 @@ export const notFoundHandler: RequestHandler = (req, res) => {
 export const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   // Errors we threw on purpose: show them as they are
   if (err instanceof AppError) {
-    res.status(err.status).json({ error: { code: err.code, message: err.message } });
-    return;
-  }
+  res.status(err.status).json({
+    error: { code: err.code, message: err.message, details: err.details },
+  });
+  return;
+}
 
   // A request body that isn't valid JSON
   if (err.type === 'entity.parse.failed') {
