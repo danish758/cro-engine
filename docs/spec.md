@@ -4,6 +4,9 @@
 
 **Accounts**
 - Sign up, log in, log out
+- Passwords: at least 8 characters, no composition rules, no blocklist in v1 ([021](decisions/021-password-policy-v1.md))
+- Logged-in state is a session cookie that lasts 7 days from login ([020](decisions/020-sessions-over-jwt.md))
+- A failed login says only "Wrong email or password"
 
 **Projects and roles**
 - Create, edit and delete a project
@@ -94,3 +97,5 @@
 - Targeting groups: reusable, locked while a running experiment uses them, not deletable while used
 - Feature flags
 - Secret API keys: stored hashed, shown once
+- Passwords: minimum 15 characters and a check against common and breached passwords (NIST SP 800-63B-4)
+- Active sessions list ("logged in from Chrome on Mac") and log out of all devices

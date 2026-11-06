@@ -5,6 +5,7 @@ Status: tables, relationships and columns decided. Next: write the SQL.
 ## Tables
 
 - users
+- sessions
 - memberships
 - projects
 - environments
@@ -29,6 +30,7 @@ Status: tables, relationships and columns decided. Next: write the SQL.
 | environments | experiments | one to many | experiments.environment_id |
 | folders | experiments | one to many | experiments.folder_id |
 | experiments | variants | one to many (at least two) | variants.experiment_id |
+| users | sessions | one to many | sessions.user_id (ON DELETE CASCADE) |
 | users | audit_logs | one to many, user optional | audit_logs.user_id (ON DELETE SET NULL) |
 | projects | audit_logs | one to many | audit_logs.project_id (ON DELETE CASCADE) |
 
@@ -241,6 +243,25 @@ A trigger was rejected because it would also block the cascade when a project is
 **Indexes:**
 - `(project_id, created_at)`: recent changes in a project
 - `(entity_type, entity_id)`: history of one thing
+
+### sessions
+
+Added in migration `003_sessions.sql` ([020](decisions/020-sessions-over-jwt.md)).
+
+| Column | Type | Null? | Default | Notes |
+| --- | --- | --- | --- | --- |
+| token_hash | text | no | | Primary key. SHA-256 (hex) of the random session token: `CHECK (length(token_hash) = 64)`. The plain token only ever lives in the browser cookie |
+| user_id | bigint | no | | FK to users.id, ON DELETE CASCADE |
+| created_at | timestamptz | no | `now()` | |
+| expires_at | timestamptz | no | | Set by app code at login (`now() + interval '7 days'`), so the length is an app setting, not a schema default |
+
+No `id` column: sessions are only ever looked up by token hash. No `updated_at`: a session never changes.
+
+Indexes: `user_id`, for "log out of all devices".
+
+`app_user` has `SELECT, INSERT, DELETE` only (no `UPDATE`).
+
+Every lookup must check expiry: `WHERE token_hash = $1 AND expires_at > now()`. Expired rows stay until cleaned up (a background job, later).
 
 ## To verify in psql
 
