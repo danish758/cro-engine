@@ -12,11 +12,14 @@
   "description": "CRO Engine platform API (Express): accounts, projects, experiments, and the config endpoint the SDK calls.",
   "dependencies": {
     "@cro-engine/assignment-engine": "*",
+    "argon2": "^0.45.2",
+    "cookie-parser": "^1.4.7",
     "express": "^5.3.0",
     "pg": "^8.23.1",
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@types/cookie-parser": "^1.4.10",
     "@types/express": "^5.0.6",
     "@types/pg": "^8.23.1"
   }
