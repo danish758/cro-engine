@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:3000
+
+### Sign up
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Ali",
+  "email": "Ali@X.com",
+  "password": "longenough"
+}
+
+### Sign up again with different case (expect 409)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "Ali again",
+  "email": "ALI@x.com",
+  "password": "longenough"
+}
+
+### Invalid input (expect 400)
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "name": "",
+  "email": "not-an-email",
+  "password": "123"
+}
+
+
+### Log in (expect 200 + cookie)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ALI@x.com",
+  "password": "longenough"
+}
+
+### Wrong password (expect 401)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "ali@x.com",
+  "password": "wrongpassword"
+}
+
+### Email that doesn't exist (expect 401, same message)
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "nobody@x.com",
+  "password": "whatever123"
+}
+
+### Who am I (after login, expect 200)
+GET {{baseUrl}}/auth/me
+
+### Log out (expect 204)
+POST {{baseUrl}}/auth/logout
+
+### Health check
+GET {{baseUrl}}/health
