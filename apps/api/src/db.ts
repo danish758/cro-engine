@@ -1,6 +1,9 @@
 import pg from 'pg';
 import {config} from './config.ts';
 
+// bigint (type id 20) → JavaScript number. Safe while IDs stay below 2^53.
+pg.types.setTypeParser(20, (value) => Number(value));
+
 export const pool = new pg.Pool({
   connectionString: config.DATABASE_URL,
 });
