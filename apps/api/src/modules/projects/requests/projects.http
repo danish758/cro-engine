@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000
+
+### My projects (log in first)
+GET {{baseUrl}}/projects
+
+### Create a project
+POST {{baseUrl}}/projects
+Content-Type: application/json
+
+{ "name": "Shop A" }
+
+### Get one project
+GET {{baseUrl}}/projects/1
+
+### Someone else's or a missing project (expect 404)
+GET {{baseUrl}}/projects/9999
+
+### Not a number (expect 404)
+GET {{baseUrl}}/projects/abc
+
+### Rename (admin)
+PATCH {{baseUrl}}/projects/1
+Content-Type: application/json
+
+{ "name": "Shop B" }
+
+### Delete (admin)
+DELETE {{baseUrl}}/projects/1
+
+### Gone (expect 404)
+GET {{baseUrl}}/projects/1
