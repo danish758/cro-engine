@@ -1,5 +1,5 @@
 import { pool } from '../../db.ts';
-import { randomBytes } from 'node:crypto';
+import { generateApiKey } from '../../lib/api-key.ts';
 import { withTransaction } from '../../db.ts';
 import { writeAuditLog } from '../../lib/audit.ts';
 
@@ -14,10 +14,6 @@ export async function listProjects(userId: number) {
     [userId],
   );
   return rows;
-}
-
-function generateApiKey(): string {
-  return `pk_${randomBytes(24).toString('hex')}`;
 }
 
 export async function createProject(user: { id: number; email: string }, name: string) {

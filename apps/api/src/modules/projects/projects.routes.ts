@@ -5,6 +5,8 @@ import { parseBody } from '../../lib/validate.ts';
 import { projectNameSchema } from './projects.schemas.ts';
 import { requireProjectRole } from '../../middleware/require-project-role.ts';
 import { createProject, getProject, listProjects, renameProject, deleteProject } from './projects.service.ts';
+import { environmentsRouter } from '../environments/environments.routes.ts';
+
 
 export const projectsRouter = Router();
 
@@ -37,3 +39,6 @@ projectsRouter.delete('/:id', requireProjectRole('admin'), async (req, res) => {
   await deleteProject(req.projectId!);
   res.status(HttpStatus.NO_CONTENT).end();
 });
+
+
+projectsRouter.use('/:id/environments', environmentsRouter);

@@ -6,11 +6,7 @@ import { createSession } from './session.ts';
 import type { LoginInput, SignupInput } from './auth.schemas.ts';
 import { randomBytes } from 'node:crypto';
 import { hashToken } from './session.ts';
-
-
-function isUniqueViolation(error: unknown): boolean {
-  return typeof error === 'object' && error !== null && 'code' in error && error.code === '23505';
-}
+import { isUniqueViolation } from '../../lib/db-errors.ts';
 
 export async function signup(input: SignupInput) {
   const passwordHash = await argon2.hash(input.password, { type: argon2.argon2id });
