@@ -1,0 +1,16 @@
+@baseUrl = http://localhost:3000
+
+### List environments
+GET {{baseUrl}}/projects/2/environments
+
+### Create an environment (admin)
+POST {{baseUrl}}/projects/2/environments
+Content-Type: application/json
+
+{ "name": "qa" }
+
+### Regenerate a key (use a real environment id)
+POST {{baseUrl}}/projects/2/environments/3/api-key/regenerate
+
+### Delete an environment (use a real environment id)
+DELETE {{baseUrl}}/projects/2/environments/5
