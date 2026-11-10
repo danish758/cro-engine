@@ -40,11 +40,6 @@ export async function createProject(user: { id: number; email: string }, name: s
       [environments[0].id, generateApiKey(), environments[1].id, generateApiKey()],
     );
 
-    await client.query(
-      `INSERT INTO folders (project_id, name, is_default) VALUES ($1, 'General', true)`,
-      [project.id],
-    );
-
     await writeAuditLog(client, {
       projectId: project.id,
       user,

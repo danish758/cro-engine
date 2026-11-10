@@ -6,6 +6,7 @@ import { projectNameSchema } from './projects.schemas.ts';
 import { requireProjectRole } from '../../middleware/require-project-role.ts';
 import { createProject, getProject, listProjects, renameProject, deleteProject } from './projects.service.ts';
 import { environmentsRouter } from '../environments/environments.routes.ts';
+import { foldersRouter } from '../folders/folders.routes.ts';
 
 
 export const projectsRouter = Router();
@@ -42,3 +43,4 @@ projectsRouter.delete('/:id', requireProjectRole('admin'), async (req, res) => {
 
 
 projectsRouter.use('/:id/environments', environmentsRouter);
+projectsRouter.use('/:id/folders', foldersRouter);

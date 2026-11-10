@@ -1,0 +1,37 @@
+@baseUrl = http://localhost:3000
+
+### List folders
+GET {{baseUrl}}/projects/2/folders
+
+### Create a folder
+POST {{baseUrl}}/projects/2/folders
+Content-Type: application/json
+
+{ "name": "Checkout" }
+
+### Same name, different case (expect 409)
+POST {{baseUrl}}/projects/2/folders
+Content-Type: application/json
+
+{ "name": "checkout" }
+
+### List again (General first, then alphabetical)
+GET {{baseUrl}}/projects/2/folders
+
+### Rename a folder (use a real folder id)
+PATCH {{baseUrl}}/projects/2/folders/3
+Content-Type: application/json
+
+{ "name": "Checkout page" }
+
+### Rename General (allowed)
+PATCH {{baseUrl}}/projects/2/folders/1
+Content-Type: application/json
+
+{ "name": "Main" }
+
+### Delete a folder (use a real folder id)
+DELETE {{baseUrl}}/projects/2/folders/3
+
+### Again (expect 404)
+DELETE {{baseUrl}}/projects/2/folders/3
