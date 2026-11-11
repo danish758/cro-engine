@@ -16,3 +16,6 @@ Archived experiments also block deleting an environment. Environments are long-l
 
 ## Verified
 Tested in psql: deleting an environment with an experiment fails; deleting its project succeeds and removes the experiment.
+
+## Update
+The folder part is replaced by 022: folders are optional, and the folder foreign key is now ON DELETE SET NULL (folder_id). NO ACTION remains for environments.

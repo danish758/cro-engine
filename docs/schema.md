@@ -24,11 +24,11 @@ Status: tables, relationships and columns decided. Next: write the SQL.
 | projects | memberships | one to many (at least one admin) | memberships.project_id |
 | projects | environments | one to many (two by default) | environments.project_id |
 | environments | api_keys | one to many | api_keys.environment_id |
-| projects | folders | one to many (default "General") | folders.project_id |
+| projects | folders | one to many | folders.project_id |
 | projects | context_keys | one to many | context_keys.project_id |
 | projects | experiments | one to many | experiments.project_id (keeps environment and folder in the same project, see 016) |
 | environments | experiments | one to many | experiments.environment_id |
-| folders | experiments | one to many | experiments.folder_id |
+| folders | experiments | one to many, folder optional | experiments.folder_id (ON DELETE SET NULL (folder_id)) |
 | experiments | variants | one to many (at least two) | variants.experiment_id |
 | users | sessions | one to many | sessions.user_id (ON DELETE CASCADE) |
 | users | audit_logs | one to many, user optional | audit_logs.user_id (ON DELETE SET NULL) |
@@ -121,25 +121,14 @@ Regenerating runs in one transaction: revoke the old key first, then insert the 
 | id | bigint | no | identity | Primary key |
 | project_id | bigint | no | | FK to projects.id, ON DELETE CASCADE |
 | name | text | no | | Unique within the project, case-insensitive: unique index on `(project_id, lower(name))` |
-| is_default | boolean | no | `false` | True for the "General" folder created with each project |
 | created_at | timestamptz | no | `now()` | |
 | updated_at | timestamptz | no | `now()` | Set by app code on every update |
 
 No column for experiments: the link lives on `experiments.folder_id`.
 
-One default folder per project, enforced with a partial unique index:
-
-```sql
-CREATE UNIQUE INDEX one_default_folder_per_project
-  ON folders (project_id)
-  WHERE is_default;
-```
-
-The default folder can't be deleted. App code blocks it (it can still be renamed).
-
 Also `UNIQUE (id, project_id)`, so experiments can point a composite foreign key at the pair ([016](decisions/016-composite-fks-keep-experiments-in-one-project.md)).
 
-Before deleting a folder, app code moves its archived experiments to the default folder. Active experiments block the delete.
+Folders are optional labels ([022](decisions/022-optional-folders.md)). Deleting a folder never touches its experiments: their `folder_id` is set to empty, and they show as "no folder". The `is_default` column and the General folder were removed in migration `004_optional_folders.sql`.
 
 ### context_keys
 
@@ -165,7 +154,7 @@ The key stays case-sensitive (the SDK matches attribute names exactly). The form
 | id | bigint | no | identity | Primary key |
 | project_id | bigint | no | | FK to projects.id, ON DELETE CASCADE |
 | environment_id | bigint | no | | Composite FK `(environment_id, project_id)` to environments `(id, project_id)`, ON DELETE NO ACTION |
-| folder_id | bigint | no | | Composite FK `(folder_id, project_id)` to folders `(id, project_id)`, ON DELETE NO ACTION |
+| folder_id | bigint | yes | | Empty means no folder. Composite FK `(folder_id, project_id)` to folders `(id, project_id)`, ON DELETE SET NULL (folder_id): only `folder_id` is emptied, `project_id` stays. With `folder_id` empty, Postgres skips the composite check |
 | key | text | no | | `UNIQUE (environment_id, key)`. `CHECK (key ~ '^[a-z0-9]+(-[a-z0-9]+)*$')`, e.g. `checkout-v2`. Never changes after creation |
 | name | text | no | | |
 | description | text | yes | | Empty means no description |
@@ -181,7 +170,8 @@ No column for variants (the link lives on `variants.experiment_id`), conversion 
 **One project per experiment:** the composite foreign keys share one `project_id`, so the environment and the folder must both belong to the experiment's project, or the row is rejected.
 
 **Deleting:**
-- Deleting an environment or folder that still has experiments (active or archived) fails: `NO ACTION` checks at the end of the statement
+- Deleting an environment that still has experiments (active or archived) fails: `NO ACTION` checks at the end of the statement
+- Deleting a folder always succeeds: its experiments' `folder_id` becomes empty
 - Deleting a project succeeds: the cascade through `project_id` removes its experiments within the same statement, before that check runs ([017](decisions/017-no-action-instead-of-restrict.md))
 - To verify in psql: deleting an environment with an experiment fails; deleting its project succeeds
 

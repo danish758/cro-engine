@@ -22,7 +22,8 @@
 
 **Folders**
 - Create, rename and delete folders (one level, no nesting)
-- A default folder ("General") is created with each project; it can be renamed but not deleted
+- Folders are optional: an experiment can be in one folder or none
+- Deleting a folder keeps its experiments; they become "no folder"
 - Folder names are unique within a project, ignoring case
 - An experiment can be moved to another folder at any time
 
@@ -33,7 +34,7 @@
 
 **Experiments**
 - Create, edit, duplicate and archive
-- Each experiment belongs to one environment and one folder
+- Each experiment belongs to one environment, and optionally to one folder
 - Variants: exactly one control, at least two variants in total, with weights
 - Targeting: a list of rules joined with AND; a rule can match one of several values for one key
 - Status: draft, running, stopped
@@ -77,7 +78,6 @@
 - Projects are deleted with everything in them, by admins only
 - Context keys can't be deleted while experiments use them
 - An environment can't be deleted while it has experiments, including archived ones; its API keys are deleted with it
-- A folder can't be deleted while it has active experiments; its archived experiments are moved to the default folder first
 
 **API key access**
 - Public and always visible, since it's embedded in website code
