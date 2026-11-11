@@ -1,0 +1,31 @@
+@baseUrl = http://localhost:3000
+
+### List context keys
+GET {{baseUrl}}/projects/2/context-keys
+
+### Create
+POST {{baseUrl}}/projects/2/context-keys
+Content-Type: application/json
+
+{ "key": "device", "type": "string" }
+
+### Bad format (expect 400, not 500)
+POST {{baseUrl}}/projects/2/context-keys
+Content-Type: application/json
+
+{ "key": "Device", "type": "string" }
+
+### Unknown type (expect 400)
+POST {{baseUrl}}/projects/2/context-keys
+Content-Type: application/json
+
+{ "key": "country", "type": "date" }
+
+### Duplicate (expect 409)
+POST {{baseUrl}}/projects/2/context-keys
+Content-Type: application/json
+
+{ "key": "device", "type": "number" }
+
+### Delete an unused key (use a real id)
+DELETE {{baseUrl}}/projects/2/context-keys/1
