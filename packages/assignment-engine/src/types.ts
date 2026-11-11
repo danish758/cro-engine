@@ -5,10 +5,15 @@ export type VariantWeight = {
 
 export type TargetingOperator = 'eq' | 'neq' | 'in' | 'notIn' | 'gt' | 'lt';
 
+/** A single attribute value a user can have. */
+export type AttributeValue = string | number | boolean;
+
 export type TargetingRule = {
   attribute: string;
   operator: TargetingOperator;
-  value: string | number | string[];
+  // Single value for eq/neq/gt/lt (gt/lt: numbers only), list for in/notIn.
+  // Lists hold strings or numbers; a list of booleans would be pointless.
+  value: AttributeValue | (string | number)[];
 };
 
 export type ExperimentStatus = 'draft' | 'running' | 'stopped';
@@ -23,7 +28,7 @@ export type ExperimentConfig = {
 
 export type AssignmentContext = {
   userId: string; // stable per-user id, e.g. long-lived cookie value
-  attributes?: Record<string, string | number>;
+  attributes?: Record<string, AttributeValue>;
 };
 
 export type ExclusionReason = 'not-running' | 'targeting-failed' | 'invalid-config';
