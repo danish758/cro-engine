@@ -3,6 +3,33 @@ import { evaluateRule, matchesTargeting } from '../src/targeting.js';
 import type { TargetingRule } from '../src/types.js';
 
 describe('evaluateRule', () => {
+  it('eq/neq: work with boolean values', () => {
+    const isPro: TargetingRule = { attribute: 'is_pro', operator: 'eq', value: true };
+    expect(evaluateRule(isPro, true)).toBe(true);
+    expect(evaluateRule(isPro, false)).toBe(false);
+
+    const notPro: TargetingRule = { attribute: 'is_pro', operator: 'neq', value: true };
+    expect(evaluateRule(notPro, false)).toBe(true);
+    expect(evaluateRule(notPro, true)).toBe(false);
+  });
+
+  it('eq: never treats a boolean as equal to its string or number form', () => {
+    const rule: TargetingRule = { attribute: 'is_pro', operator: 'eq', value: true };
+    expect(evaluateRule(rule, 'true')).toBe(false);
+    expect(evaluateRule(rule, 1)).toBe(false);
+  });
+
+  it('in: matches numbers in the list', () => {
+    const rule: TargetingRule = { attribute: 'tier', operator: 'in', value: [1, 2] };
+    expect(evaluateRule(rule, 2)).toBe(true);
+    expect(evaluateRule(rule, 3)).toBe(false);
+  });
+
+  it('gt/lt: never match booleans', () => {
+    const gt: TargetingRule = { attribute: 'visits', operator: 'gt', value: 0 };
+    expect(evaluateRule(gt, true)).toBe(false);
+  });
+
   it('eq: matches equal values, rejects unequal', () => {
     const rule: TargetingRule = { attribute: 'country', operator: 'eq', value: 'US' };
     expect(evaluateRule(rule, 'US')).toBe(true);
@@ -61,5 +88,16 @@ describe('matchesTargeting', () => {
     expect(matchesTargeting(rules, { country: 'US', plan: 'pro' })).toBe(true);
     expect(matchesTargeting(rules, { country: 'US', plan: 'free' })).toBe(false);
     expect(matchesTargeting(rules, { country: 'CA', plan: 'pro' })).toBe(false);
+  });
+});
+
+describe('matchesTargeting with boolean attributes', () => {
+  it('ANDs boolean rules with other rules', () => {
+    const rules: TargetingRule[] = [
+      { attribute: 'is_pro', operator: 'eq', value: true },
+      { attribute: 'country', operator: 'eq', value: 'PK' },
+    ];
+    expect(matchesTargeting(rules, { is_pro: true, country: 'PK' })).toBe(true);
+    expect(matchesTargeting(rules, { is_pro: false, country: 'PK' })).toBe(false);
   });
 });

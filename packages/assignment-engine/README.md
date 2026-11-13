@@ -123,6 +123,8 @@ recoverable; you never contaminate the populations you're trying to compare.
 - `bucketKey(userId, experimentKey, seed?) => string` — builds the string that gets hashed.
 - `matchesTargeting(rules, attributes?) => boolean` — evaluates AND'd targeting rules.
 - `evaluateRule(rule, actual) => boolean` — evaluates a single rule (`eq`, `neq`, `in`, `notIn`, `gt`, `lt`).
+
+Attribute values can be strings, numbers or booleans. Comparisons are strict, so `true` never matches `"true"` or `1`. `gt`/`lt` only match numbers, and `in`/`notIn` lists hold strings or numbers.
 - `validateConfig(config) => string[]` — structural validation; run at config load/deploy time, not per-request.
 
 See [`src/types.ts`](./src/types.ts) for the full type definitions.

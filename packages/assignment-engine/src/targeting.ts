@@ -1,4 +1,4 @@
-import type { TargetingOperator, TargetingRule } from './types.js';
+import type { AttributeValue, TargetingOperator, TargetingRule } from './types.js';
 
 /**
  * Evaluates a single targeting rule against an actual attribute value.
@@ -43,7 +43,7 @@ export function evaluateRule(rule: TargetingRule, actual: unknown): boolean {
  */
 export function matchesTargeting(
   rules: TargetingRule[],
-  attributes?: Record<string, string | number>
+  attributes?: Record<string, AttributeValue>
 ): boolean {
   if (rules.length === 0) return true;
   if (!attributes) return false;

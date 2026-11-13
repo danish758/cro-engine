@@ -1,0 +1,178 @@
+@baseUrl = http://localhost:3000
+
+### All experiments
+GET {{baseUrl}}/projects/2/experiments
+
+### By environment
+GET {{baseUrl}}/projects/2/experiments?environmentId=3
+
+### Bad filter (expect 400)
+GET {{baseUrl}}/projects/2/experiments?environmentId=abc
+
+### One experiment (use a real id, or expect 404)
+GET {{baseUrl}}/projects/2/experiments/1
+
+### Create (use your real environment and folder ids)
+POST {{baseUrl}}/projects/2/experiments
+Content-Type: application/json
+
+{
+  "key": "new-checkout-button",
+  "name": "New checkout button",
+  "environmentId": 3,
+  "folderId": 2
+}
+
+### Same key, same environment (expect 409)
+POST {{baseUrl}}/projects/2/experiments
+Content-Type: application/json
+
+{ "key": "new-checkout-button", "name": "Again", "environmentId": 3 }
+
+### Another project's environment (expect 400 naming environmentId)
+POST {{baseUrl}}/projects/2/experiments
+Content-Type: application/json
+
+{ "key": "sneaky", "name": "Sneaky", "environmentId": 9999 }
+
+### Replace variants (use a real experiment id)
+PUT {{baseUrl}}/projects/2/experiments/2/variants
+Content-Type: application/json
+
+{
+  "variants": [
+    { "key": "control", "name": "Control", "isControl": true, "weight": 34 },
+    { "key": "blue", "name": "Blue button", "isControl": false, "weight": 33 },
+    { "key": "big-text", "name": "Bigger text", "isControl": false, "weight": 33 }
+  ]
+}
+
+### Everything wrong at once (expect 400 listing all three problems)
+PUT {{baseUrl}}/projects/2/experiments/2/variants
+Content-Type: application/json
+
+{
+  "variants": [
+    { "key": "a", "name": "A", "isControl": true, "weight": 60 },
+    { "key": "a", "name": "B", "isControl": true, "weight": 60 }
+  ]
+}
+
+### Valid targeting
+PUT {{baseUrl}}/projects/2/experiments/2/targeting
+Content-Type: application/json
+
+{
+  "targeting": [
+    { "attribute": "device", "operator": "eq", "value": "mobile" },
+    { "attribute": "visits", "operator": "gt", "value": 3 }
+  ]
+}
+
+### Wrong types and an unknown key (expect 400 with three issues)
+PUT {{baseUrl}}/projects/2/experiments/2/targeting
+Content-Type: application/json
+
+{
+  "targeting": [
+    { "attribute": "device", "operator": "eq", "value": 5 },
+    { "attribute": "visits", "operator": "in", "value": ["a", "b"] },
+    { "attribute": "plan", "operator": "eq", "value": "pro" }
+  ]
+}
+
+### Clear all rules
+PUT {{baseUrl}}/projects/2/experiments/2/targeting
+Content-Type: application/json
+
+{ "targeting": [] }
+
+### Rename only
+PATCH {{baseUrl}}/projects/2/experiments/2
+Content-Type: application/json
+
+{ "name": "Bigger checkout button" }
+
+### Remove from its folder
+PATCH {{baseUrl}}/projects/2/experiments/2
+Content-Type: application/json
+
+{ "folderId": null }
+
+### Empty body (expect 400)
+PATCH {{baseUrl}}/projects/2/experiments/2
+Content-Type: application/json
+
+{}
+
+
+### Start (draft → running)
+POST {{baseUrl}}/projects/2/experiments/2/status
+Content-Type: application/json
+
+{ "status": "running" }
+
+### Change variants now (expect 409 EXPERIMENT_LOCKED)
+PUT {{baseUrl}}/projects/2/experiments/2/variants
+Content-Type: application/json
+
+{ "variants": [
+  { "key": "control", "name": "Control", "isControl": true, "weight": 50 },
+  { "key": "b", "name": "B", "isControl": false, "weight": 50 }
+] }
+
+### Start again (expect 409 INVALID_STATUS_CHANGE)
+POST {{baseUrl}}/projects/2/experiments/2/status
+Content-Type: application/json
+
+{ "status": "running" }
+
+### Stop
+POST {{baseUrl}}/projects/2/experiments/2/status
+Content-Type: application/json
+
+{ "status": "stopped" }
+
+### Back to draft (expect 400: not an accepted value)
+POST {{baseUrl}}/projects/2/experiments/2/status
+Content-Type: application/json
+
+{ "status": "draft" }
+
+### Archive a running experiment (expect 409 EXPERIMENT_RUNNING)
+POST {{baseUrl}}/projects/2/experiments/2/archive
+
+### Stop it, then archive (expect 200)
+POST {{baseUrl}}/projects/2/experiments/2/status
+Content-Type: application/json
+
+{ "status": "stopped" }
+
+###
+POST {{baseUrl}}/projects/2/experiments/2/archive
+
+### Archive again (expect 409 EXPERIMENT_ARCHIVED)
+POST {{baseUrl}}/projects/2/experiments/2/archive
+
+### It no longer appears in the list, but can still be opened
+GET {{baseUrl}}/projects/2/experiments
+###
+GET {{baseUrl}}/projects/2/experiments/2
+
+### Duplicate with a new key (expect 201, a draft with the same variants)
+POST {{baseUrl}}/projects/2/experiments/2/duplicate
+Content-Type: application/json
+
+{ "key": "new-checkout-button-v2" }
+
+### Same key, same environment (expect 409)
+POST {{baseUrl}}/projects/2/experiments/2/duplicate
+Content-Type: application/json
+
+{ "key": "new-checkout-button" }
+
+### Same key, another environment of this project (expect 201)
+POST {{baseUrl}}/projects/2/experiments/2/duplicate
+Content-Type: application/json
+
+{ "key": "new-checkout-button", "environmentId": 4 }
