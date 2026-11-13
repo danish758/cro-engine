@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:3000
+
+### Config for an environment (paste a real key)
+GET {{baseUrl}}/api/v1/config
+Authorization: Bearer pk_ec9d3ed30df71e5dfa7b76212b49929ef1c04aab08773cbe
+
+### No key (expect 401)
+GET {{baseUrl}}/api/v1/config
+
+### Fake key (expect 401)
+GET {{baseUrl}}/api/v1/config
+Authorization: Bearer pk_f229283789bcc49f2bbc523ab6c0caedf9ac5c0949114c8f

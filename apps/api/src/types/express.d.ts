@@ -4,6 +4,7 @@ declare global {
       user?: { id: number; name: string; email: string };
       projectId?: number;
       projectRole?: 'admin' | 'member';
+      environmentId?: number;
     }
   }
 }
