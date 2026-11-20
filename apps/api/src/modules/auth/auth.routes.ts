@@ -5,10 +5,11 @@ import { signupSchema, loginSchema } from './auth.schemas.ts';
 import { signup, login, logout } from './auth.service.ts';
 import { SESSION_COOKIE, sessionCookieOptions } from './session.ts';
 import { requireAuth } from '../../middleware/require-auth.ts';
+import { authRateLimit } from '../../middleware/rate-limit.ts';
 
 export const authRouter = Router();
 
-authRouter.post('/signup', async (req, res) => {
+authRouter.post('/signup', authRateLimit, async (req, res) => {
   const input = parseBody(signupSchema, req.body);
   const { user, token } = await signup(input);
 
@@ -16,7 +17,7 @@ authRouter.post('/signup', async (req, res) => {
   res.status(HttpStatus.CREATED).json({ user });
 });
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login', authRateLimit, async (req, res) => {
   const input = parseBody(loginSchema, req.body);
   const { user, token } = await login(input);
 
