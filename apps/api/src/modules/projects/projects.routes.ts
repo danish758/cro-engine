@@ -9,6 +9,7 @@ import { environmentsRouter } from '../environments/environments.routes.ts';
 import { foldersRouter } from '../folders/folders.routes.ts';
 import { contextKeysRouter } from '../context-keys/context-keys.routes.ts';
 import { experimentsRouter } from '../experiments/experiments.routes.ts';
+import { auditLogsRouter } from '../audit-logs/audit-logs.routes.ts';
 
 
 export const projectsRouter = Router();
@@ -48,3 +49,4 @@ projectsRouter.use('/:id/environments', environmentsRouter);
 projectsRouter.use('/:id/folders', foldersRouter);
 projectsRouter.use('/:id/context-keys', contextKeysRouter);
 projectsRouter.use('/:id/experiments', experimentsRouter);
+projectsRouter.use('/:id/audit-logs', auditLogsRouter);
