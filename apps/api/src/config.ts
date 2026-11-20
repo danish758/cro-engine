@@ -6,6 +6,7 @@ import { z } from 'zod';
 const envSchema = z.object({
   DATABASE_URL: z.string().min(1),
   PORT: z.coerce.number().int().positive().default(3000),
+  DASHBOARD_ORIGIN: z.url(),
 });
 
 const result = envSchema.safeParse(process.env);
