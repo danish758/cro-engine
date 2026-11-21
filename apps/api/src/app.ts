@@ -12,6 +12,10 @@ import { projectsRouter } from './modules/projects/projects.routes.ts';
 
 export const app = express();
 
+// On Railway, requests come through one proxy. Read the real visitor IP
+// from X-Forwarded-For, so rate limiting counts each visitor separately.
+app.set('trust proxy', 1);
+
 // Security headers on every response (also removes X-Powered-By)
 app.use(helmet());
 
