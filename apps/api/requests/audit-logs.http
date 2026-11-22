@@ -1,4 +1,4 @@
-@baseUrl = http://localhost:3000
+@baseUrl = cro-engine-production-faf57b25.up.railway.app
 
 ### First page, small, so pagination is easy to see
 GET {{baseUrl}}/projects/2/audit-logs?limit=3

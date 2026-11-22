@@ -1,7 +1,7 @@
-@baseUrl = http://localhost:3000
+@baseUrl = https://cro-engine-production-faf57b25.up.railway.app
 
 ### All experiments
-GET {{baseUrl}}/projects/2/experiments
+GET {{baseUrl}}/projects/1/experiments
 
 ### By environment
 GET {{baseUrl}}/projects/2/experiments?environmentId=3
@@ -13,14 +13,13 @@ GET {{baseUrl}}/projects/2/experiments?environmentId=abc
 GET {{baseUrl}}/projects/2/experiments/1
 
 ### Create (use your real environment and folder ids)
-POST {{baseUrl}}/projects/2/experiments
+POST {{baseUrl}}/projects/1/experiments
 Content-Type: application/json
 
 {
   "key": "new-checkout-button",
   "name": "New checkout button",
-  "environmentId": 3,
-  "folderId": 2
+  "environmentId": 1
 }
 
 ### Same key, same environment (expect 409)
@@ -107,7 +106,7 @@ Content-Type: application/json
 
 
 ### Start (draft → running)
-POST {{baseUrl}}/projects/2/experiments/2/status
+POST {{baseUrl}}/projects/1/experiments/1/status
 Content-Type: application/json
 
 { "status": "running" }
