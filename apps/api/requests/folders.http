@@ -1,5 +1,3 @@
-@baseUrl = http://localhost:3000
-
 ### List folders
 GET {{baseUrl}}/projects/2/folders
 

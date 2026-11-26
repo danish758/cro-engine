@@ -1,5 +1,3 @@
-@baseUrl = http://localhost:3000
-
 ### My projects (log in first)
 GET {{baseUrl}}/projects
 

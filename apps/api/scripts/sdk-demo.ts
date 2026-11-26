@@ -8,7 +8,7 @@ if (!apiKey) {
   process.exit(1);
 }
 
-const client = new CroEngineClient({ apiKey, apiUrl: 'http://localhost:3000' });
+const client = new CroEngineClient({ apiKey, apiUrl: process.env.DEMO_API_URL ?? 'http://localhost:3000' });
 
 console.log('--- Mobile visitors (should be assigned) ---');
 for (let i = 1; i <= 10; i++) {

@@ -1,5 +1,3 @@
-@baseUrl = http://localhost:3000
-
 ### List context keys
 GET {{baseUrl}}/projects/2/context-keys
 
