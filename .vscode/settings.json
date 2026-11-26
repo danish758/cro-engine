@@ -1,0 +1,11 @@
+{
+  "rest-client.environmentVariables": {
+    "$shared": {},
+    "local": {
+      "baseUrl": "http://localhost:3000"
+    },
+    "production": {
+      "baseUrl": "https://api.splitbeam.dev"
+    }
+  }
+}

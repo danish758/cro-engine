@@ -1,5 +1,3 @@
-@baseUrl = https://cro-engine-production-faf57b25.up.railway.app
-
 ### All experiments
 GET {{baseUrl}}/projects/1/experiments
 

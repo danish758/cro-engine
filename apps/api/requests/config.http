@@ -1,5 +1,3 @@
-@baseUrl = http://localhost:3000
-
 ### Config for an environment (paste a real key)
 GET {{baseUrl}}/api/v1/config
 Authorization: Bearer pk_ec9d3ed30df71e5dfa7b76212b49929ef1c04aab08773cbe

@@ -1,7 +1,5 @@
-@baseUrl = cro-engine-production-faf57b25.up.railway.app
-
 ### First page, small, so pagination is easy to see
-GET {{baseUrl}}/projects/2/audit-logs?limit=3
+GET {{baseUrl}}/projects/1/audit-logs?limit=3
 
 ### Next page (paste nextCursor from the response above)
 GET {{baseUrl}}/projects/2/audit-logs?limit=3&cursor=31
